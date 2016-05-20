@@ -41,7 +41,7 @@ foreach(qt5_module ${qt5_modules})
     if(${qt5_module}_FOUND)
         include_directories(${${qt5_module}_INCLUDE_DIRS})
         add_definitions(${${qt5_module}_DEFINITIONS})
-        list(APPEND CMAKE_CXX_FLAGS ${${qt5_module}_EXECUTABLE_COMPILE_FLAGS})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${${qt5_module}_EXECUTABLE_COMPILE_FLAGS}")
         list(APPEND QT_LIBRARIES ${${qt5_module}_LIBRARIES})
     endif()
 endforeach()
@@ -54,6 +54,8 @@ if(Qt5Core_FOUND)
     # FIXME: CMake's automoc seems to break macosx parallel builds.
     # set(CMAKE_AUTOMOC ON)
     # set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+    set(QT_QTOPENGL_INCLUDE_DIR Qt5OpenGL_INCLUDE_DIRS)
 
     # Replace qt4 macros.
     macro(qt4_wrap_cpp)
@@ -68,7 +70,7 @@ if(Qt5Core_FOUND)
         endmacro()
     endif()
 
-    set(QT_USE_FILE ${CMAKE_CURRENT_BINARY_DIR}/use-qt5.cmake CACHE PATH "")
+    set(QT_USE_FILE ${CMAKE_CURRENT_BINARY_DIR}/use-qt5.cmake CACHE PATH "" FORCE)
     file(WRITE ${QT_USE_FILE} "#")
 
     # Trick the remainder of the build system.

@@ -45,8 +45,15 @@
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #endif
+
 #include <GL/glew.h>
-#include <GL/gl.h>
+
+#include <pcl/pcl_config.h>
+#ifdef OPENGL_IS_A_FRAMEWORK
+# include <OpenGL/gl.h>
+#else
+# include <GL/gl.h>
+#endif
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
@@ -599,7 +606,7 @@ void simulate_callback (const pcl::visualization::KeyboardEvent &event,
   
   
   
-  viewer->addCoordinateSystem (1.0,pose);
+  viewer->addCoordinateSystem (1.0,pose,"reference");
   
   
   
@@ -968,7 +975,7 @@ main (int argc, char** argv)
       p->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 0.0, 0.0, cloud_name_normals_pc.str ());
       p->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, 3, cloud_name_normals_pc.str ());
       cloud_name_normals_pc << "-pc";
-      p->addPointCloudPrincipalCurvatures (cloud_xyz, cloud_normals, cloud_pc, factor, pc_scale, cloud_name_normals_pc.str (), viewport);
+      p->addPointCloudPrincipalCurvatures<pcl::PointXYZ, pcl::Normal> (cloud_xyz, cloud_normals, cloud_pc, factor, pc_scale, cloud_name_normals_pc.str (), viewport);
       p->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, 3, cloud_name_normals_pc.str ());
     }
 
@@ -1079,7 +1086,7 @@ main (int argc, char** argv)
     double ax_x = 0.0, ax_y = 0.0, ax_z = 0.0;
     pcl::console::parse_3x_arguments (argc, argv, "-ax_pos", ax_x, ax_y, ax_z, false);
     // Draw XYZ axes if command-line enabled
-    p->addCoordinateSystem (axes, ax_x, ax_y, ax_z);
+    p->addCoordinateSystem (axes, ax_x, ax_y, ax_z, "reference");
   }
 
   // Clean up the memory used by the binary blob

@@ -113,7 +113,6 @@ namespace pcl
         OctreeIteratorBase (const OctreeIteratorBase& src, unsigned int max_depth_arg = 0) :
             octree_ (src.octree_), current_state_(0), max_octree_depth_(max_depth_arg)
         {
-          this->reset ();
         }
 
         /** \brief Copy operator.
@@ -135,7 +134,7 @@ namespace pcl
         }
 
         /** \brief Equal comparison operator
-         * \param[in] OctreeIteratorBase to compare with
+         * \param[in] other OctreeIteratorBase to compare with
          */
         bool operator==(const OctreeIteratorBase& other) const
         {
@@ -145,7 +144,7 @@ namespace pcl
         }
 
         /** \brief Inequal comparison operator
-         * \param[in] OctreeIteratorBase to compare with
+         * \param[in] other OctreeIteratorBase to compare with
          */
         bool operator!=(const OctreeIteratorBase& other) const
         {
@@ -341,7 +340,9 @@ namespace pcl
             const OctreeKey& key = getCurrentOctreeKey();
             // calculate integer id with respect to octree key
             unsigned int depth = octree_->getTreeDepth ();
-            id = key.x << (depth * 2) | key.y << (depth * 1) | key.z << (depth * 0);
+            id = static_cast<unsigned long> (key.x) << (depth * 2)
+               | static_cast<unsigned long> (key.y) << (depth * 1)
+               | static_cast<unsigned long> (key.z) << (depth * 0);
           }
 
           return id;

@@ -77,7 +77,7 @@ namespace pcl
       typedef typename pcl::search::KdTree<PointTarget>::Ptr KdTreePtr;
 
       typedef pcl::search::KdTree<PointSource> KdTreeReciprocal;
-      typedef typename KdTree::Ptr KdTreeReciprocalPtr;
+      typedef typename KdTreeReciprocal::Ptr KdTreeReciprocalPtr;
      
       typedef pcl::PointCloud<PointSource> PointCloudSource;
       typedef typename PointCloudSource::Ptr PointCloudSourcePtr;
@@ -178,10 +178,14 @@ namespace pcl
         *
         * \param[in] cloud the input point cloud source
         */
-      PCL_DEPRECATED (void setInputCloud (const PointCloudSourceConstPtr &cloud), "[pcl::registration::Registration::setInputCloud] setInputCloud is deprecated. Please use setInputSource instead.");
+      PCL_DEPRECATED ("[pcl::registration::Registration::setInputCloud] setInputCloud is deprecated. Please use setInputSource instead.")
+      void
+      setInputCloud (const PointCloudSourceConstPtr &cloud);
 
       /** \brief Get a pointer to the input point cloud dataset target. */
-      PCL_DEPRECATED (PointCloudSourceConstPtr const getInputCloud (), "[pcl::registration::Registration::getInputCloud] getInputCloud is deprecated. Please use getInputSource instead.");
+      PCL_DEPRECATED ("[pcl::registration::Registration::getInputCloud] getInputCloud is deprecated. Please use getInputSource instead.")
+      PointCloudSourceConstPtr const
+      getInputCloud ();
 
       /** \brief Provide a pointer to the input source 
         * (e.g., the point cloud that we want to align to the target)

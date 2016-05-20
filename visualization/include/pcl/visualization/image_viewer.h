@@ -51,6 +51,7 @@
 
 #include <boost/shared_array.hpp>
 
+#include <vtkVersion.h>
 #include <vtkInteractorStyleImage.h>
 
 class vtkImageSlice;
@@ -127,6 +128,17 @@ namespace pcl
         /** \brief Destructor. */
         virtual ~ImageViewer ();
        
+#if ((VTK_MAJOR_VERSION > 5) || ((VTK_MAJOR_VERSION == 5) && (VTK_MINOR_VERSION > 4)))
+        /** \brief Set up the interactor style. By default the interactor style is set to
+          * vtkInteractorStyleImage you can use this to set it to another type.
+          * \param[in] style user set interactor style.
+          */
+        void
+        setInteractorStyle (vtkInteractorObserver *style)
+        {
+          interactor_->SetInteractorStyle (style);
+        }
+#endif
         /** \brief Show a monochrome 2D image on screen.
           * \param[in] data the input data representing the image
           * \param[in] width the width of the image
@@ -417,6 +429,30 @@ namespace pcl
         void
         markPoint (size_t u, size_t v, Vector3ub fg_color, Vector3ub bg_color = red_color, double radius = 3.0,
                    const std::string &layer_id = "points", double opacity = 1.0);
+
+        /** \brief Sets the pixel at coordinates(u,v) to color while setting the neighborhood to another
+          * \param[in] uv the u/x, v/y coordinate of the pixels to be marked
+          * \param[in] fg_color the pixel color
+          * \param[in] bg_color the neighborhood color
+          * \param[in] size edge of the square surrounding each pixel
+          * \param[in] layer_id the name of the layer (default: "markers")
+          * \param[in] opacity the opacity of the layer (default: 1.0)
+          */
+        void
+        markPoints (const std::vector<int>& uv, Vector3ub fg_color, Vector3ub bg_color = red_color, double size = 3.0,
+                    const std::string &layer_id = "markers", double opacity = 1.0);
+
+        /** \brief Sets the pixel at coordinates(u,v) to color while setting the neighborhood to another (float coordinates version).
+          * \param[in] uv the u/x, v/y coordinate of the pixels to be marked
+          * \param[in] fg_color the pixel color
+          * \param[in] bg_color the neighborhood color
+          * \param[in] size edge of the square surrounding each pixel
+          * \param[in] layer_id the name of the layer (default: "markers")
+          * \param[in] opacity the opacity of the layer (default: 1.0)
+          */
+        void
+        markPoints (const std::vector<float>& uv, Vector3ub fg_color, Vector3ub bg_color = red_color, double size = 3.0,
+                    const std::string &layer_id = "markers", double opacity = 1.0);
 
         /** \brief Set the window title name
           * \param[in] name the window title
@@ -721,6 +757,31 @@ namespace pcl
         addLine (unsigned int x_min, unsigned int y_min, unsigned int x_max, unsigned int y_max,
                  const std::string &layer_id = "line", double opacity = 1.0);
 
+        /** \brief Add a 2D text with a given color
+          * \param[in] x the X coordinate
+          * \param[in] y the Y coordinate
+          * \param[in] text the text string to be displayed
+          * \param[in] r the red channel of the color that the line should be rendered with (0.0 -> 1.0)
+          * \param[in] g the green channel of the color that the line should be rendered with (0.0 -> 1.0)
+          * \param[in] b the blue channel of the color that the line should be rendered with (0.0 -> 1.0)
+          * \param[in] layer_id the 2D layer ID where we want the extra information to be drawn.
+          * \param[in] opacity the opacity of the layer: 0 for invisible, 1 for opaque. (default: 1.0)
+          */
+        bool
+        addText (unsigned int x, unsigned int y, const std::string& text,
+                 double r, double g, double b,
+                 const std::string &layer_id = "line", double opacity = 1.0);
+
+        /** \brief Add a 2D text with a given color
+          * \param[in] x the X coordinate
+          * \param[in] y the Y coordinate
+          * \param[in] text the text string to be displayed
+          * \param[in] layer_id the 2D layer ID where we want the extra information to be drawn.
+          * \param[in] opacity the opacity of the layer: 0 for invisible, 1 for opaque. (default: 1.0)
+          */
+        bool
+        addText (unsigned int x, unsigned int y, const std::string& text,
+                 const std::string &layer_id = "line", double opacity = 1.0);
 
         /** \brief Add a generic 2D mask to an image 
           * \param[in] image the organized point cloud dataset containing the image data
@@ -841,13 +902,13 @@ namespace pcl
         resetStoppedFlag () { stopped_ = false; }
 
         /** \brief Fire up a mouse event with a specified event ID
-          * \param[int] event_id the id of the event
+          * \param[in] event_id the id of the event
           */
         void 
         emitMouseEvent (unsigned long event_id);
         
         /** \brief Fire up a keyboard event with a specified event ID
-          * \param[int] event_id the id of the event
+          * \param[in] event_id the id of the event
           */
         void 
         emitKeyboardEvent (unsigned long event_id);
@@ -952,7 +1013,7 @@ namespace pcl
         /** \brief The renderer. */
         vtkSmartPointer<vtkRenderer> ren_;
 
-#if ((VTK_MAJOR_VERSION == 5) && (VTK_MINOR_VERSION >= 10))
+#if !((VTK_MAJOR_VERSION == 5) && (VTK_MINOR_VERSION <= 10))
         /** \brief Global prop. This is the actual "actor". */
         vtkSmartPointer<vtkImageSlice> slice_;
 #endif

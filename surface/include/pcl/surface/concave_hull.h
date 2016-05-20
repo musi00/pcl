@@ -134,8 +134,10 @@ namespace pcl
       }
 
       /** \brief Returns the dimensionality (2 or 3) of the calculated hull. */
-      PCL_DEPRECATED (int getDim () const, "[pcl::ConcaveHull::getDim] This method is deprecated. Please use getDimension () instead.");
-
+      PCL_DEPRECATED ("[pcl::ConcaveHull::getDim] This method is deprecated. Please use getDimension () instead.")
+      int
+      getDim () const;
+      
       /** \brief Returns the dimensionality (2 or 3) of the calculated hull. */
       inline int
       getDimension () const
@@ -154,6 +156,16 @@ namespace pcl
         else
           PCL_ERROR ("[pcl::%s::setDimension] Invalid input dimension specified!\n", getClassName ().c_str ());
       }
+
+      /** \brief Retrieve the indices of the input point cloud that for the convex hull.
+        *
+        * \note Should only be called after reconstruction was performed and if the ConcaveHull is
+        * set to preserve information via setKeepInformation ().
+        *
+        * \param[out] hull_point_indices The indices of the points forming the point cloud
+        */
+      void
+      getHullPointIndices (pcl::PointIndices &hull_point_indices) const;
 
     protected:
       /** \brief Class get name method. */
@@ -195,6 +207,9 @@ namespace pcl
       
       /** \brief the dimensionality of the concave hull */
       int dim_;
+
+      /** \brief vector containing the point cloud indices of the convex hull points. */
+      pcl::PointIndices hull_indices_;
   };
 }
 

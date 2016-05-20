@@ -44,11 +44,18 @@
 
 namespace pcl
 {
-  /** \brief Removes points with x, y, or z equal to NaN
+  /** \brief Removes points with x, y, or z equal to NaN (dry run).
+    *
+    * This function only computes the mapping between the points in the input
+    * cloud and the cloud that would result from filtering. It does not
+    * actually construct and output the filtered cloud.
+    *
+    * \note This function does not modify the input point cloud!
+    *
     * \param cloud_in the input point cloud
-    * \param index the mapping (ordered): cloud_out.points[i] = cloud_in.points[index[i]]
-    * \note The density of the point cloud is lost.
-    * \note Can be called with cloud_in == cloud_out
+    * \param index the mapping (ordered): filtered_cloud.points[i] = cloud_in.points[index[i]]
+    *
+    * \see removeNaNFromPointCloud
     * \ingroup filters
     */
   template<typename PointT> void
@@ -162,6 +169,7 @@ namespace pcl
       }
 
     protected:
+
       using Filter<PointT>::initCompute;
       using Filter<PointT>::deinitCompute;
 
@@ -177,6 +185,10 @@ namespace pcl
       /** \brief Abstract filter method for point cloud indices. */
       virtual void
       applyFilter (std::vector<int> &indices) = 0;
+
+      /** \brief Abstract filter method for point cloud. */
+      virtual void
+      applyFilter (PointCloud &output) = 0;
   };
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,6 +285,7 @@ namespace pcl
       }
 
     protected:
+
       /** \brief False = normal filter behavior (default), true = inverted behavior. */
       bool negative_;
 
@@ -285,6 +298,10 @@ namespace pcl
       /** \brief Abstract filter method for point cloud indices. */
       virtual void
       applyFilter (std::vector<int> &indices) = 0;
+
+      /** \brief Abstract filter method for point cloud. */
+      virtual void
+      applyFilter (PCLPointCloud2 &output) = 0;
   };
 }
 

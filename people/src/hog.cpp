@@ -325,8 +325,8 @@ pcl::people::HOG::compute (float *I, float *descriptor) const
   float *M, *O, *G, *H;
   M = new float[h_ * w_];
   O = new float[h_ * w_];
-  H = (float*) calloc((w_ / bin_size_) * (h_ / bin_size_) * n_orients_, sizeof(float));
-  G = (float*) calloc((w_ / bin_size_) * (h_ / bin_size_) * n_orients_ *4, sizeof(float));
+  H = new float[(w_ / bin_size_) * (h_ / bin_size_) * n_orients_]();
+  G = new float[(w_ / bin_size_) * (h_ / bin_size_) * n_orients_ *4]();
 
   // Compute gradient magnitude and orientation at each location (uses sse):
   gradMag (I, h_, w_, n_channels_, M, O );
@@ -339,18 +339,18 @@ pcl::people::HOG::compute (float *I, float *descriptor) const
  
   // Select descriptor of internal part of the image (remove borders):
   int k = 0;    
-  for (unsigned int l = 0; l < (n_orients_ * 4); l++)
+  for (int l = 0; l < (n_orients_ * 4); l++)
   {
-    for (unsigned int j = 1; j < (w_ / bin_size_ - 1); j++)
+    for (int j = 1; j < (w_ / bin_size_ - 1); j++)
     {
-      for (unsigned int i = 1; i < (h_ / bin_size_ - 1); i++)
+      for (int i = 1; i < (h_ / bin_size_ - 1); i++)
       {
         descriptor[k] = G[i + j * h_ / bin_size_ + l * (h_ / bin_size_) * (w_ / bin_size_)];
         k++;
       }
     }
   }
-  free(M); free(O); free(H); free(G);
+  delete[] M; delete[] O; delete[] H; delete[] G;
 }
 
 void 

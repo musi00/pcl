@@ -1272,7 +1272,13 @@ pcl::LINEMOD::detectTemplatesSemiScaleInvariant (
         }
       }
 
+#ifdef __SSE2__
+      aligned_free (score_sums);
+      aligned_free (tmp_score_sums);
+#else
       delete[] score_sums;
+#endif
+
 #ifdef LINEMOD_USE_SEPARATE_ENERGY_MAPS
       delete[] score_sums_1;
       delete[] score_sums_2;
@@ -1324,6 +1330,30 @@ pcl::LINEMOD::loadTemplates (const char * file_name)
   deserialize (file_stream);
 
   file_stream.close ();
+}
+
+void
+pcl::LINEMOD::loadTemplates (std::vector<std::string> & file_names)
+{
+  templates_.clear ();
+
+  for(size_t i=0; i < file_names.size (); i++)
+  {
+    std::ifstream file_stream;
+    file_stream.open (file_names[i].c_str (), std::ofstream::in | std::ofstream::binary);
+
+    int nr_templates;
+    read (file_stream, nr_templates);
+    SparseQuantizedMultiModTemplate sqmm_template;
+
+    for (int template_index = 0; template_index < nr_templates; ++template_index)
+    {
+      sqmm_template.deserialize (file_stream);
+      templates_.push_back (sqmm_template);
+    }
+
+    file_stream.close ();
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

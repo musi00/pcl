@@ -43,6 +43,8 @@
 #include <pcl/io/boost.h>
 #include <cmath>
 #include <sstream>
+#include <pcl/PolygonMesh.h>
+#include <pcl/TextureMesh.h>
 
 namespace pcl
 {
@@ -318,7 +320,7 @@ namespace pcl
                    unsigned int point_index, unsigned int field_idx, unsigned int fields_count)
   {
     Type value;
-    if (st == "nan")
+    if (boost::iequals(st, "nan"))
     {
       value = std::numeric_limits<Type>::quiet_NaN ();
       cloud.is_dense = false;
@@ -341,7 +343,7 @@ namespace pcl
                            unsigned int point_index, unsigned int field_idx, unsigned int fields_count)
   {
     int8_t value;
-    if (st == "nan")
+    if (boost::iequals(st, "nan"))
     {
       value = static_cast<int8_t> (std::numeric_limits<int>::quiet_NaN ());
       cloud.is_dense = false;
@@ -367,7 +369,7 @@ namespace pcl
                            unsigned int point_index, unsigned int field_idx, unsigned int fields_count)
   {
     uint8_t value;
-    if (st == "nan")
+    if (boost::iequals(st, "nan"))
     {
       value = static_cast<uint8_t> (std::numeric_limits<int>::quiet_NaN ());
       cloud.is_dense = false;
@@ -387,6 +389,7 @@ namespace pcl
                         cloud.fields[field_idx].offset + 
                         fields_count * sizeof (uint8_t)], reinterpret_cast<char*> (&value), sizeof (uint8_t));
   }
+
 }
 
 #endif  //#ifndef PCL_IO_FILE_IO_H_

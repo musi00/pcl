@@ -85,7 +85,7 @@ namespace pcl
         {
         }
 
-        /** \brief Empty class constructor. */
+        /** \brief Empty class destructor. */
         virtual
         ~OctreePointCloudSearch ()
         {
@@ -600,6 +600,10 @@ namespace pcl
   }
 }
 
+#ifdef PCL_NO_PRECOMPILE
+#include <pcl/octree/impl/octree_search.hpp>
+#else
 #define PCL_INSTANTIATE_OctreePointCloudSearch(T) template class PCL_EXPORTS pcl::octree::OctreePointCloudSearch<T>;
+#endif    // PCL_NO_PRECOMPILE
 
 #endif    // PCL_OCTREE_SEARCH_H_

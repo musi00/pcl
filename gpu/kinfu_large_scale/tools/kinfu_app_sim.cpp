@@ -49,10 +49,20 @@
 
 // need to include GLEW net the top to avoid linking errors FOR PCL::SIMULATION:
 #include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-//
+
+#include <pcl/pcl_config.h>
+#ifdef OPENGL_IS_A_FRAMEWORK
+# include <OpenGL/gl.h>
+# include <OpenGL/glu.h>
+#else
+# include <GL/gl.h>
+# include <GL/glu.h>
+#endif
+#ifdef GLUT_IS_A_FRAMEWORK
+# include <GLUT/glut.h>
+#else
+# include <GL/glut.h>
+#endif
 
 #include <pcl/console/parse.h>
 #include <pcl/gpu/kinfu_large_scale/kinfu.h>
@@ -81,15 +91,10 @@
 #ifdef HAVE_OPENCV  
   #include <opencv2/highgui/highgui.hpp>
   #include <opencv2/imgproc/imgproc.hpp>
-  #include <pcl/gpu/utils/timers_opencv.hpp>
 //#include "video_recorder.h"
-typedef pcl::gpu::ScopeTimerCV ScopeTimeT;
-#else
-  typedef pcl::ScopeTime ScopeTimeT;
 #endif
+typedef pcl::ScopeTime ScopeTimeT;
 
-#include "../src/internal.h"
-  
 #include <Eigen/Dense>
 #include <cmath>
 #include <iostream>
